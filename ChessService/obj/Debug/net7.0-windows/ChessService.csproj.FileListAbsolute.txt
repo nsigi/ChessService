@@ -1,0 +1,17 @@
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\bin\Debug\net7.0-windows\ChessService.exe
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\bin\Debug\net7.0-windows\ChessService.deps.json
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\bin\Debug\net7.0-windows\ChessService.runtimeconfig.json
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\bin\Debug\net7.0-windows\ChessService.dll
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\bin\Debug\net7.0-windows\ChessService.pdb
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.csproj.AssemblyReference.cache
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.Form1.resources
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.csproj.GenerateResource.cache
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.AssemblyInfoInputs.cache
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.AssemblyInfo.cs
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.csproj.CoreCompileInputs.cache
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.dll
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\refint\ChessService.dll
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.pdb
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.genruntimeconfig.cache
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ref\ChessService.dll
