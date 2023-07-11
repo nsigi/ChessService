@@ -14,9 +14,9 @@ namespace ChessService
         private static Cell prevCell { get; set; }
         public static int curPlayer; // 1 - белые, 2 - черные
         public static bool isMoving = false;
-        public static Form1 FieldUI { get; set; }
+        public static FieldUI FieldUI { get; set; }
 
-        public static void Init(Form1 field)
+        public static void Init(FieldUI field)
         {
             FieldUI = field;
             Field.field = new int[8, 8]
@@ -71,10 +71,9 @@ namespace ChessService
 
         public static Figure PlaceFigure(int x, int y, int figValue)
         {
-            Image figure = new Bitmap(100, 100);
-            Graphics g = Graphics.FromImage(figure);
-            g.DrawImage(new Bitmap("C:\\Users\\_Asus_\\Documents\\Study\\ChessService\\Spites\\chess.png"), new Rectangle(0, 0, 100, 100), 150 * (figValue % 10 - 1),
-                (figValue / 10 != 1) ? 150 : 0, 150, 150, GraphicsUnit.Pixel);
+            SpritesFigures.SpriteFigures();
+            Image figure = (figValue / 10 == 1) ? SpritesFigures.WhiteFigursImages[figValue % 10] : SpritesFigures.BlackFigursImages[figValue % 10];
+
             switch (figValue % 10)
             {
                 case 1: return new King(x, y, figure, figValue);
@@ -157,15 +156,15 @@ namespace ChessService
         {
             (Field.field[cur.pos.X, cur.pos.Y], Field.field[prev.pos.X, prev.pos.Y]) = (Field.field[prev.pos.X, prev.pos.Y], 0);
             cur.btn.Text = null;
-            cur.btn.BackgroundImage = prev.btn.BackgroundImage;
-            prev.btn.BackgroundImage = null;
             if (cur.figure == null)
                 cur.figure = DefFigure(new Point(cur.pos.X, cur.pos.Y), prev);
             else
             {
                 cur.figure = prev.figure;
-                (prev.figure.x, prev.figure.y) = (cur.pos.X, cur.pos.Y);
+                prev.figure.Move(new Point(cur.pos.X, cur.pos.Y));
             }
+            cur.btn.BackgroundImage = prev.btn.BackgroundImage;
+            prev.btn.BackgroundImage = null;
             // удаление фигуры, если там она была (в список удаленных)
         }
 

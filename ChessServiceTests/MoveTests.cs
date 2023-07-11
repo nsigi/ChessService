@@ -11,13 +11,31 @@ namespace ChessServiceTests
 {
     public class MoveTests
     {
+        private int x, y;
+        private int figValue;
+        private Image figIm;
+        private List<Point> rightMoves;
+        private List<Point> resMoves;
+
+
+        public MoveTests()
+        {
+            x = y = 0;
+            figValue = 0;
+            figIm = new Bitmap(100, 100);
+            rightMoves = null;
+            resMoves = null;
+            Utils.HelpSpritesFigures();
+        }
+
         [Fact]
         public void MovesPawn() 
         {
-            int x = 2, y = 1;
-            int figValue = 16;
-            Image figIm = Utils.CreateImage(figValue);
-            List<Point> rightMoves = new List<Point>() { new Point(1, 2), new Point(1, 0)};
+            x = 2;
+            y = 1;
+            figValue = 16;
+            figIm = Utils.GetImage(figValue);
+            rightMoves = new List<Point>() { new Point(1, 2), new Point(1, 0)};
             var newPos = new int[8,8]
             {
             { 25,24,23,22,21,23,24,25 },
@@ -32,7 +50,7 @@ namespace ChessServiceTests
             Utils.CreatePosition(newPos);
 
             var pawn = new Pawn(x, y, figIm, figValue);  // пешка белых
-            var resMoves = pawn.GetMoves();
+            resMoves = pawn.GetMoves();
 
             Assert.Equal(rightMoves.Count, resMoves.Count);
             if (rightMoves.Count == resMoves.Count)
@@ -47,10 +65,11 @@ namespace ChessServiceTests
         [Fact]
         public void MovesHorse()
         {
-            int x = 5, y = 2;
-            int figValue = 14;
-            Image figIm = Utils.CreateImage(figValue);
-            List<Point> rightMoves = new List<Point>() { new Point(3, 1), new Point(4, 4), new Point(3, 3),
+            x = 5;
+            y = 2;
+            figValue = 14;
+            figIm = Utils.GetImage(figValue);
+            rightMoves = new List<Point>() { new Point(3, 1), new Point(4, 4), new Point(3, 3),
                                                          new Point(4, 0), new Point(7, 1)};
             var newPos = new int[8, 8]
             {
@@ -65,7 +84,7 @@ namespace ChessServiceTests
             Utils.CreatePosition(newPos);
 
             var horse = new Horse(x, y, figIm, figValue);  // конь белых
-            var resMoves = horse.GetMoves();
+            resMoves = horse.GetMoves();
 
             Assert.Equal(rightMoves.Count, resMoves.Count);
             if (rightMoves.Count == resMoves.Count)
@@ -80,10 +99,11 @@ namespace ChessServiceTests
         [Fact]
         public void MovesBishop()
         {
-            int x = 4, y = 5;
-            int figValue = 13;
-            Image figIm = Utils.CreateImage(figValue);
-            List<Point> rightMoves = new List<Point>() { new Point(7, 2), new Point(6, 3), new Point(5, 4), new Point(3, 6),
+            x = 4;
+            y = 5;
+            figValue = 13;
+            figIm = Utils.GetImage(figValue);
+            rightMoves = new List<Point>() { new Point(7, 2), new Point(6, 3), new Point(5, 4), new Point(3, 6),
                                                          new Point(5, 6), new Point(3, 4), new Point(2, 3), new Point(1, 2)};
             var newPos = new int[8, 8]
             {
@@ -98,7 +118,7 @@ namespace ChessServiceTests
             Utils.CreatePosition(newPos);
 
             var bishop = new Bishop(x, y, figIm, figValue);  // слон белых
-            var resMoves = bishop.GetMoves();
+            resMoves = bishop.GetMoves();
 
             Assert.Equal(rightMoves.Count, resMoves.Count);
             if (rightMoves.Count == resMoves.Count)
@@ -113,10 +133,11 @@ namespace ChessServiceTests
         [Fact]
         public void MovesQueen()
         {
-            int x = 5, y = 5;
-            int figValue = 12;
-            Image figIm = Utils.CreateImage(figValue);
-            List<Point> rightMoves = new List<Point>() { new Point(7, 3), new Point(6, 4), new Point(4, 6), new Point(3, 7),
+            x = 5;
+            y = 5;
+            figValue = 12;
+            figIm = Utils.GetImage(figValue);
+            rightMoves = new List<Point>() { new Point(7, 3), new Point(6, 4), new Point(4, 6), new Point(3, 7),
                                                          new Point(4, 4), new Point(5, 4), new Point(5, 3), new Point(5, 6),
                                                          new Point(5, 7)};
             var newPos = new int[8, 8]
@@ -132,7 +153,7 @@ namespace ChessServiceTests
             Utils.CreatePosition(newPos);
 
             var queen = new Queen(x, y, figIm, figValue);  // слон белых
-            var resMoves = queen.GetMoves();
+            resMoves = queen.GetMoves();
 
             Assert.Equal(rightMoves.Count, resMoves.Count);
             if (rightMoves.Count == resMoves.Count)
@@ -147,10 +168,11 @@ namespace ChessServiceTests
         [Fact]
         public void MovesRook()
         {
-            int x = 4, y = 3;
-            int figValue = 15;
-            Image figIm = Utils.CreateImage(figValue);
-            List<Point> rightMoves = new List<Point>() { new Point(4, 0), new Point(4, 1), new Point(4, 2), new Point(4, 4),
+            x = 4;
+            y = 3;
+            figValue = 15;
+            figIm = Utils.GetImage(figValue);
+            rightMoves = new List<Point>() { new Point(4, 0), new Point(4, 1), new Point(4, 2), new Point(4, 4),
                                                          new Point(0, 3), new Point(1, 3), new Point(2, 3), new Point(3, 3)};
             var newPos = new int[8, 8]
             {
@@ -165,7 +187,7 @@ namespace ChessServiceTests
             Utils.CreatePosition(newPos);
 
             var rook = new Rook(x, y, figIm, figValue);  // ладья белых
-            var resMoves = rook.GetMoves();
+            resMoves = rook.GetMoves();
 
             Assert.Equal(rightMoves.Count, resMoves.Count);
             if (rightMoves.Count == resMoves.Count)
@@ -180,10 +202,11 @@ namespace ChessServiceTests
         [Fact]
         public void MovesKing()
         {
-            int x = 1, y = 5;
-            int figValue = 21;
-            Image figIm = Utils.CreateImage(figValue);
-            List<Point> rightMoves = new List<Point>() { new Point(0, 4), new Point(1, 4), new Point(1, 6), new Point(2, 6),
+            x = 1;
+            y = 5;
+            figValue = 21;
+            figIm = Utils.GetImage(figValue);
+            rightMoves = new List<Point>() { new Point(0, 4), new Point(1, 4), new Point(1, 6), new Point(2, 6),
                                                          new Point(2, 5)};
             var newPos = new int[8, 8]
             {
@@ -198,7 +221,7 @@ namespace ChessServiceTests
             Utils.CreatePosition(newPos);
 
             var king = new King(x, y, figIm, figValue);  // король черных
-            var resMoves = king.GetMoves();
+            resMoves = king.GetMoves();
 
             Assert.Equal(rightMoves.Count, resMoves.Count);
             if (rightMoves.Count == resMoves.Count)

@@ -33,8 +33,13 @@ namespace ChessService.Figures
         public void Eat(Figure figOp)
         {
             figureValue = figOp.figureValue;
-            (x, y) = (figOp.x, figOp.y);
+            Move(new Point(figOp.x, figOp.y));
             figOp.onBoard = false;
+        }
+
+        public virtual void Move(Point point)
+        {
+            (x, y) = (point.X, point.Y);
         }
     }
 }

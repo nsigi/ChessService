@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessService.HelpForms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,6 +49,19 @@ namespace ChessService.Figures
         {
             if (Field.InsideField(cx, cy) && Field.field[cx, cy] != 0 && Field.field[cx, cy] / 10 != owner)
                 acceptMoves.Add(new Point(cx, cy));
+        }
+
+        public override void Move(Point point) 
+        {
+            (x, y) = (point.X, point.Y);
+            if (x == 0 || x == 7)
+            {
+                var pickForm = new ChangePawnForm(owner, new Point(x, y));
+                pickForm.Show();
+                //figureIm = Utils.GetImage(owner * 10 + figureValue);
+                //figureValue = Field.field[x, y] % 10;
+                //Field.cells[x, y].btn.BackgroundImage = figureIm;
+            }
         }
         //public ChangeFigure() { }
     }

@@ -7,12 +7,17 @@ namespace ChessServiceTests
 {
     public class CreateFieldTests
     {
+        public CreateFieldTests() 
+        {
+            Utils.HelpSpritesFigures();
+        }
+
         [Fact]
         public void CheckCreatePawn()
         {
             int x = 6, y = 0;
             int figValue = 16;
-            Image figIm = Utils.CreateImage(figValue);
+            Image figIm = Utils.GetImage(figValue);
             
             var pawn = new Pawn(x, y, figIm, figValue);  // пешка белых
 
@@ -27,7 +32,7 @@ namespace ChessServiceTests
         {
             int x = 7, y = 2;
             int figValue = 13;
-            Image figIm = Utils.CreateImage(figValue);
+            Image figIm = Utils.GetImage(figValue);
 
             var bishop = new Pawn(x, y, figIm, figValue);  // пешка белых
 
