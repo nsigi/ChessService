@@ -52,6 +52,7 @@ namespace ChessService.HelpForms
             Field.cells[figurePosition.X, figurePosition.Y].figure = newFigure;
             Field.cells[figurePosition.X, figurePosition.Y].btn.BackgroundImage = newFigure.figureIm;
             Field.SetsFigures[side].AddFigure(newFigure);
+            Field.AnalysPosition(figurePosition, side);
             this.Close();
         }
 

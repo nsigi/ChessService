@@ -157,25 +157,9 @@ namespace ChessService
                 if (isMoving)
                 {
                     SwapCells(curCell, prevCell);
-                    SetsFigures[curPlayer].UpdateAttackMoves();
 
-                    if (SetsFigures[curPlayer].isCheck && SetsFigures[curPlayer].acceptMoves.Contains(curCell.pos)) //если сделан допустимый ход
-                        SetsFigures[curPlayer].UnsetCheck();
-                    if (SetsFigures[curPlayer].attackMoves.Contains(SetsFigures[Utils.GetOpponent(curPlayer)].posKing))
-                        Utils.SetCheckOpponent(curPlayer);
-                    
-                    SetsFigures[Utils.GetOpponent(curPlayer)].UpdateAcceptMoves();
+                    AnalysPosition(curCell.pos, curPlayer);
 
-                    if (SetsFigures[Utils.GetOpponent(curPlayer)].isCheck)
-                    {
-                        if (SetsFigures[Utils.GetOpponent(curPlayer)].acceptMoves.Count == 0)
-                            MessageBox.Show("Мат");
-                    }
-                    else
-                    {
-                        if (SetsFigures[Utils.GetOpponent(curPlayer)].acceptMoves.Count == 0)
-                            MessageBox.Show("Пат");
-                    }
                     isMoving = false;
                     HideMoves();
                     //LockCells();
@@ -188,7 +172,29 @@ namespace ChessService
             }
         }
 
-        public static Color SetColorCell(int i, int j)
+        public static void AnalysPosition(Point move, int side)
+        {
+            SetsFigures[side].UpdateAttackMoves();
+
+            if (SetsFigures[side].isCheck && SetsFigures[side].acceptMoves.Contains(move)) //если сделан допустимый ход
+                SetsFigures[side].UnsetCheck();
+            if (SetsFigures[side].attackMoves.Contains(SetsFigures[Utils.GetOpponent(side)].posKing))
+                Utils.SetCheckOpponent(side);
+
+            SetsFigures[Utils.GetOpponent(side)].UpdateAcceptMoves();
+
+            if (SetsFigures[Utils.GetOpponent(side)].isCheck)
+            {
+                if (SetsFigures[Utils.GetOpponent(side)].acceptMoves.Count == 0)
+                    MessageBox.Show("Мат");
+            }
+            else
+            {
+                if (SetsFigures[Utils.GetOpponent(side)].acceptMoves.Count == 0)
+                    MessageBox.Show("Пат");
+            }
+        }
+public static Color SetColorCell(int i, int j)
         {
             return ((i + j) % 2 != 0) ? Color.FromArgb(181, 136, 99) : Color.FromArgb(240, 217, 181);
         }
@@ -204,7 +210,7 @@ namespace ChessService
             {
                 SetsFigures[Utils.GetOpponent(curPlayer)].RemoveFigure(cur.figure);
             }
-            if (prev.figure.figureValue == 6 && cur.pos.X == 0 || cur.pos.X == 7)// пешка дошла до края
+            if (prev.figure.figureValue == 6 && (cur.pos.X == 0 || cur.pos.X == 7))// пешка дошла до края
             {
                 Field.SetsFigures[curPlayer].RemoveFigure(prev.figure);
                 var pickForm = new ChangePawnForm(curPlayer, cur.pos);
