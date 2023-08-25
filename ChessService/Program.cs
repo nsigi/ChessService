@@ -14,7 +14,7 @@ namespace ChessService
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             //Application.Run(new ChangePawnForm(1, new Point(100, 100)));
-            Application.Run(new FieldUI());
+            Application.Run(new GameUI());
         }
     }
 }

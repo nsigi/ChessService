@@ -16,3 +16,5 @@ C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-
 C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ref\ChessService.dll
 C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.FieldUI.resources
 C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.HelpForms.ChangePawnForm.resources
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.GameUI.resources
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessService\obj\Debug\net7.0-windows\ChessService.Properties.Resources.resources

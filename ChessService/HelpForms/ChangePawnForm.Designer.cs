@@ -37,6 +37,7 @@
             ClientSize=new Size(100, 400);
             FormBorderStyle=FormBorderStyle.None;
             Name="ChangePawnForm";
+            ShowInTaskbar=false;
             StartPosition=FormStartPosition.CenterScreen;
             Text="Pick figure";
             ResumeLayout(false);

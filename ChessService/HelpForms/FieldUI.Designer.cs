@@ -31,14 +31,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FieldUI));
             SuspendLayout();
             // 
-            // Form1
+            // FieldUI
             // 
             AutoScaleDimensions=new SizeF(10F, 25F);
             AutoScaleMode=AutoScaleMode.Font;
             ClientSize=new Size(978, 844);
             Icon=(Icon)resources.GetObject("$this.Icon");
-            Name="Form1";
-            StartPosition=FormStartPosition.CenterScreen;
+            Name="FieldUI";
+            ShowInTaskbar=false;
+            StartPosition=FormStartPosition.CenterParent;
             Text="Chess";
             ResumeLayout(false);
         }

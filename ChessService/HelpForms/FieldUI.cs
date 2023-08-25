@@ -5,7 +5,8 @@ namespace ChessService
         public FieldUI()
         {
             InitializeComponent();
-            Field.Init(this);
+            //Field.Init(this);
         }
+
     }
 }

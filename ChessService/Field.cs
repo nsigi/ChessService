@@ -4,6 +4,7 @@ using ChessService.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,12 +17,12 @@ namespace ChessService
         private static Cell prevCell { get; set; }
         public static int curPlayer; // 1 - белые, 2 - черные
         public static bool isMoving = false;
-        public static FieldUI FieldUI { get; set; }
+        public static Panel FieldPanel { get; set; }
         public static List<SetFigures> SetsFigures; // 1 - WhiteSetFigures, 2 - BlackSetFigures;
 
-        public static void Init(FieldUI field)
+        public static void Init(Panel fieldPanel)
         {
-            FieldUI = field;
+            FieldPanel = fieldPanel;
             Field.field = new int[8, 8]
             {
             { 25,24,23,22,21,23,24,25 },
@@ -62,13 +63,19 @@ namespace ChessService
                         btn.Enabled = false;
                     }
                     btn.Click += new EventHandler(OnClick);
-                    FieldUI.Controls.Add(btn);
+                    //FieldUI.Controls.Add(btn);
+                    FieldPanel.Controls.Add(btn);
 
                     Field.cells[i, j] = new Cell(new Point(i, j), btn, fig);
                 }
             }
             SetsFigures[(int)Side.White].UpdateAcceptMoves();
             SetsFigures[(int)Side.Black].UpdateAcceptMoves();
+        }
+
+        public static void ClearField()
+        {
+
         }
 
         public static Button CreateButton(int i, int j)
@@ -79,14 +86,16 @@ namespace ChessService
             btn.FlatAppearance.BorderSize = 0;
             btn.BackColor = SetColorCell(i, j);
             btn.Size = new Size(100, 100);
-            btn.Location = new Point(75 + j* 100, 25 + i* 100);
+            btn.Location = new Point(j * 100, i * 100);
+            //btn.Location = new Point(75 + j* 100, 25 + i* 100);
             btn.ForeColor = Color.FromArgb(100, 111, 64);
             return btn;
         }
+        
         public static Figure PlaceFigure(int x, int y, int figValue)
         {
             SpritesFigures.SpriteFigures();
-            Image figure = (figValue / 10 == 1) ? SpritesFigures.WhiteFigursImages[figValue % 10] : SpritesFigures.BlackFigursImages[figValue % 10];
+            Image figure = (figValue / 10 == 1) ? SpritesFigures.WhiteFiguresImages[figValue % 10] : SpritesFigures.BlackFiguresImages[figValue % 10];
 
             switch (figValue % 10)
             {
@@ -156,9 +165,10 @@ namespace ChessService
             {
                 if (isMoving)
                 {
+                    var isBeat = (curCell.figure != null);
                     SwapCells(curCell, prevCell);
-
-                    AnalysPosition(curCell.pos, curPlayer);
+                    var sitNumber = AnalysPosition(curCell.pos, curPlayer);
+                    Movement.WriteMove(curCell, isBeat, sitNumber);
 
                     isMoving = false;
                     HideMoves();
@@ -172,29 +182,31 @@ namespace ChessService
             }
         }
 
-        public static void AnalysPosition(Point move, int side)
+        public static int AnalysPosition(Point move, int side)
         {
+            var sitNumber = 0;
             SetsFigures[side].UpdateAttackMoves();
 
             if (SetsFigures[side].isCheck && SetsFigures[side].acceptMoves.Contains(move)) //если сделан допустимый ход
                 SetsFigures[side].UnsetCheck();
             if (SetsFigures[side].attackMoves.Contains(SetsFigures[Utils.GetOpponent(side)].posKing))
+            {
                 Utils.SetCheckOpponent(side);
+                ++sitNumber;
+            }
 
             SetsFigures[Utils.GetOpponent(side)].UpdateAcceptMoves();
-
-            if (SetsFigures[Utils.GetOpponent(side)].isCheck)
-            {
-                if (SetsFigures[Utils.GetOpponent(side)].acceptMoves.Count == 0)
+            if (SetsFigures[Utils.GetOpponent(side)].acceptMoves.Count == 0)
+                if (SetsFigures[Utils.GetOpponent(side)].isCheck)
+                {
+                    ++sitNumber;
                     MessageBox.Show("Мат");
-            }
-            else
-            {
-                if (SetsFigures[Utils.GetOpponent(side)].acceptMoves.Count == 0)
+                }
+                else
                     MessageBox.Show("Пат");
-            }
+            return sitNumber;
         }
-public static Color SetColorCell(int i, int j)
+        public static Color SetColorCell(int i, int j)
         {
             return ((i + j) % 2 != 0) ? Color.FromArgb(181, 136, 99) : Color.FromArgb(240, 217, 181);
         }
@@ -210,7 +222,7 @@ public static Color SetColorCell(int i, int j)
             {
                 SetsFigures[Utils.GetOpponent(curPlayer)].RemoveFigure(cur.figure);
             }
-            if (prev.figure.figureValue == 6 && (cur.pos.X == 0 || cur.pos.X == 7))// пешка дошла до края
+            if (prev.figure.figureValue == (int)FigureType.Pawn && (cur.pos.X == 0 || cur.pos.X == 7))// пешка дошла до края
             {
                 Field.SetsFigures[curPlayer].RemoveFigure(prev.figure);
                 var pickForm = new ChangePawnForm(curPlayer, cur.pos);
