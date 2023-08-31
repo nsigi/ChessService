@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessService.Timers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,11 +30,21 @@ namespace ChessService
             FieldPanel.Controls.Clear();
             MovesTable.Rows.Clear();
             MovesTable.Refresh();
+            GameTimers.Stop();
+            GamePlay.ClearLabelsInfo();
         }
         private void Init()
         {
             Field.Init(FieldPanel);
             Movement.Init(MovesTable);
+            GameTimers.Init(new TimeSpan(0, 5, 5), labelWhiteTimer, timerWhite, labelBlackTimer, timerBlack);
+            GamePlay.Init(labelInfoWhite, labelInfoBlack);
+        }
+
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            GameTimers.Start();
+            Field.EnableCells();
         }
     }
 }

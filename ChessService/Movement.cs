@@ -10,7 +10,7 @@ namespace ChessService
     public static class Movement
     {
         public static DataGridView MoveList { get; set; }
-        private static List<string> SituationSymbol = new List<string>() { "", "+", "#"};
+        public static List<string> SituationSymbol { get; private set; } = new List<string>() { "", "+", "#"};
         public static int CountMoves;
         private static int CharNumberA = 97;
         public static string [,] SignCells { get; set; }
@@ -31,10 +31,9 @@ namespace ChessService
             return SpritesFigures.FiguresSymbols[cellMove.figure.figureValue] + (isBeat ? "x" : "") +
                 ConvertCoords(cellMove.pos) + SituationSymbol[situation];
         }
-        public static void WriteMove(Cell cellMove, bool isBeat, int situation) // 0 - free, 1 - check, 2 - checkmate 
+        public static void WriteMove(string moveText, int side) // 0 - free, 1 - check, 2 - checkmate 
         {
-            var moveText = GenMoveText(cellMove, isBeat, situation);
-            if(cellMove.figure.owner == (int)Side.White)
+            if(side == (int)Side.White)
             {
                 MoveList.Rows.Add();
                 MoveList[0, CountMoves].Value = (CountMoves + 1).ToString();

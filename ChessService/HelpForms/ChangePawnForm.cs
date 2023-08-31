@@ -16,12 +16,14 @@ namespace ChessService.HelpForms
         //TODO форма появляется там, где пешка
         private Point figurePosition;
         private int side;
-        public ChangePawnForm(int owner, Point position)
+        public bool isBeat { set; private get; }
+        public ChangePawnForm(int owner, Point position, bool beat)
         {
             InitializeComponent();
             SpritesFigures.SpriteFigures();
             figurePosition = position;
             side = owner;
+            isBeat = beat;
             Init();
         }
 
@@ -52,7 +54,10 @@ namespace ChessService.HelpForms
             Field.cells[figurePosition.X, figurePosition.Y].figure = newFigure;
             Field.cells[figurePosition.X, figurePosition.Y].btn.BackgroundImage = newFigure.figureIm;
             Field.SetsFigures[side].AddFigure(newFigure);
-            Field.AnalysPosition(figurePosition, side);
+            int sit = Field.AnalysPosition(figurePosition, side);
+            var moveText = SpritesFigures.FiguresSymbols[6] + (isBeat ? "x" : "") + Movement.ConvertCoords(figurePosition) +
+                "=" + SpritesFigures.FiguresSymbols[newFigValue % 10] + Movement.SituationSymbol[sit];
+            Movement.WriteMove(moveText, side);
             this.Close();
         }
 

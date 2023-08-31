@@ -83,7 +83,7 @@ namespace ChessService
                         Field.SymSwapCells(Field.cells[toCell.X, toCell.Y], Field.cells[fromCell.X, fromCell.Y]);
 
                         //Field.SetsFigures[side].isCheck = false;
-                        Field.SetsFigures[Utils.GetOpponent(side)].UpdateAttackMoves();
+                        Field.SetsFigures[GamePlay.GetOpponent(side)].UpdateAttackMoves();
 
                         if (!Utils.isSymCheck)
                         {
@@ -97,7 +97,7 @@ namespace ChessService
 
                         if (copyToFig != null)
                         {
-                            Field.SetsFigures[Utils.GetOpponent(side)].AddFigure(copyToFig);
+                            Field.SetsFigures[GamePlay.GetOpponent(side)].AddFigure(copyToFig);
                             Field.cells[toCell.X, toCell.Y].figure = copyToFig;
                         }
 

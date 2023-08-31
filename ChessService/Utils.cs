@@ -26,15 +26,5 @@ namespace ChessService
         {
             Field.field = newField;
         }
-
-        public static int GetOpponent(int owner) //TODO перенести
-        {
-            return (owner % 2 + 1);
-        }
-
-        public static void SetCheckOpponent(int side) //TODO перенести
-        {
-            Field.SetsFigures[GetOpponent(side)].SetCheck();
-        }
     }
 }

@@ -23,11 +23,5 @@ namespace ChessServiceTests
             for (int i = 0; i < 4; ++i)
                 Assert.Equal(rightConverts[i], resConverts[i]);
         }
-
-        [Fact]
-        public void WriteMove()
-        {
-
-        }
     }
 }
