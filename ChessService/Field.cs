@@ -156,22 +156,26 @@ namespace ChessService
                     var isBeat = (curCell.figure != null);
                     bool isNotChangePawn = SwapCells(curCell, prevCell);
                     var sitNumber = AnalysPosition(curCell.pos, GamePlay.CurrentPlayer);
-                    
-                    if(isNotChangePawn)
+
+                    if (isNotChangePawn)
                         Movement.WriteMove(Movement.GenMoveText(curCell, isBeat, sitNumber), curCell.figure.owner);
 
                     isMoving = false;
                     HideMoves();
-                    //LockCells();
-                    EnableCells();
+                    LockAllCells();
                     GamePlay.ChangeSide(); // смена хода
+                    if (isNotChangePawn && sitNumber < 2)
+                    {
+                        EnableCells();
+                        GameTimers.ChangeCourse();
+                    }
                     prevCell = null;
-                    GameTimers.ChangeCourse();
+                    
                 }
             }
         }
 
-        public static int AnalysPosition(Point move, int side)
+        public static int AnalysPosition(Point move, int side) // 0 - free, 1 - check, 2 - mat, 3 - pat
         {
             var sitNumber = 0;
             SetsFigures[side].UpdateAttackMoves();
@@ -187,13 +191,14 @@ namespace ChessService
             SetsFigures[GamePlay.GetOpponent(side)].UpdateAcceptMoves();
             if (SetsFigures[GamePlay.GetOpponent(side)].acceptMoves.Count == 0)
             {
-                if (SetsFigures[GamePlay.GetOpponent(side)].isCheck)
-                {
-                    ++sitNumber;
+                ++sitNumber;
+                if (SetsFigures[GamePlay.GetOpponent(side)].isCheck)    
                     GamePlay.EndGame((int)Situation.Checkmate);
-                }
                 else
+                {
                     GamePlay.EndGame((int)Situation.Pat);
+                    ++sitNumber;
+                }
                 
             }
             return sitNumber;
@@ -227,6 +232,8 @@ namespace ChessService
                 Field.cells[cur.pos.X, cur.pos.Y].figure = Field.cells[prev.pos.X, prev.pos.Y].figure;
                 prev.figure.Move(cur.pos);
                 cur.btn.BackgroundImage = prev.btn.BackgroundImage;
+                if (Field.cells[cur.pos.X, cur.pos.Y].figure.isNotMove)
+                    Field.cells[cur.pos.X, cur.pos.Y].figure.isNotMove = false;
             }
             prev.btn.BackgroundImage = null;
             prev.figure = null;
@@ -269,7 +276,7 @@ namespace ChessService
             return Field.cells[x, y].figure == null || Field.cells[x, y].figure.owner != owner && !Field.cells[x, y].figure.IsKing();
         }
 
-        public static bool IsNotEmptyCell(int x, int y, int owner)
+        public static bool IsNotEmptyCell(int x, int y)
         {
             return Field.cells[x, y].figure != null;
         }
@@ -300,7 +307,7 @@ namespace ChessService
             {
                 for (int j = 0; j < 8; ++j)
                 {
-                    if (Field.cells[i, j].figure != null)
+                    if (Field.cells[i, j].figure != null && Field.cells[i, j].figure.owner == GamePlay.CurrentPlayer)
                         Field.cells[i, j].btn.Enabled = true;
                 }
             }

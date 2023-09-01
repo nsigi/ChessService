@@ -13,6 +13,7 @@ namespace ChessService
 {
     public partial class GameUI : Form
     {
+        private int StartButtonCounter { get; set; }
         public GameUI()
         {
             InitializeComponent();
@@ -37,12 +38,49 @@ namespace ChessService
         {
             Field.Init(FieldPanel);
             Movement.Init(MovesTable);
+            labelWhiteTimer.BackColor = labelBlackTimer.BackColor = Color.Snow;
             GameTimers.Init(new TimeSpan(0, 5, 5), labelWhiteTimer, timerWhite, labelBlackTimer, timerBlack);
             GamePlay.Init(labelInfoWhite, labelInfoBlack);
+            StartButton.Text = "Start";
+            StartButtonCounter = 0;
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
+            if (GamePlay.IsNotEndGame)
+            {
+                switch (StartButtonCounter)
+                {
+                    case 0:
+                        {
+                            StartGame();
+                            ++StartButtonCounter;
+                            break;
+                        }
+                    case 1:
+                        {
+                            StartButton.Text = "Play";
+                            GameTimers.Stop();
+                            Field.LockAllCells();
+                            ++StartButtonCounter;
+                            break;
+                        }
+                    case 2:
+                        {
+                            StartGame();
+                            --StartButtonCounter;
+                            break;
+                        }
+                }
+            }
+        }
+        public void DisableStartButton()
+        {
+            StartButton.Enabled = false;
+        }
+        private void StartGame()
+        {
+            StartButton.Text = "Pause";
             GameTimers.Start();
             Field.EnableCells();
         }

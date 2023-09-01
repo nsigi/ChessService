@@ -25,17 +25,23 @@ namespace ChessService.Timers
 
         public static void Start()
         {
-            Timers[1].PlayTimer.Start();
+            Timers[GamePlay.CurrentPlayer].PlayTimer.Start();
+            Timers[GamePlay.GetOpponent()].ViewLabel.BackColor = Utils.BlackoutColor;
+            Timers[GamePlay.CurrentPlayer].ViewLabel.BackColor = Color.Snow;
         }
         public static void ChangeCourse()
         {
             Timers[GamePlay.GetOpponent()].PlayTimer.Stop();
-            Timers[GamePlay.CurrentPlayer].PlayTimer.Start();
+            Start();
+
         }
 
         public static void Stop() {
             for (int i = 1; i < 3; ++i)
+            {
                 Timers[i].PlayTimer.Stop();
+                Timers[i].ViewLabel.BackColor = Color.FromArgb((int)(255 * 0.6), Color.Black);
+            }
         }
     }
 }

@@ -15,19 +15,21 @@ namespace ChessService.Figures
         public Image figureIm { get; set;}
         public int owner { get; set;}
         public int figureValue { get; set;}
+        public bool isNotMove { get; set;}
 
         public HashSet<Point> acceptMoves;
         public HashSet<Point> moves;
         public HashSet<Point> attackMoves;
         
         public Figure() { }
-        public Figure(int cX, int cY, Image figIm, int figValue)
+        public Figure(int cX, int cY, Image figIm, int figValue, bool isnotMove = true)
         {
             x = cX;
             y = cY;
             figureIm = figIm;
             owner = figValue / 10;
             figureValue = figValue % 10;
+            isNotMove = isnotMove;
         }
 
         public abstract HashSet<Point> GetMoves();
@@ -36,7 +38,7 @@ namespace ChessService.Figures
         {
             if (Field.InsideField(cx, cy) && Field.AvaliableMove(cx, cy, owner))
                 moves.Add(new Point(cx, cy));
-            return Field.InsideField(cx, cy) && Field.IsNotEmptyCell(cx, cy, owner);
+            return Field.InsideField(cx, cy) && Field.IsNotEmptyCell(cx, cy);
         }
 
         public virtual bool CheckAttackEndMoves(int cx, int cy)
@@ -52,7 +54,7 @@ namespace ChessService.Figures
                 }
             }
 
-            return Field.InsideField(cx, cy) && Field.IsNotEmptyCell(cx, cy, owner);
+            return Field.InsideField(cx, cy) && Field.IsNotEmptyCell(cx, cy);
         }
 
 
@@ -73,6 +75,11 @@ namespace ChessService.Figures
         public bool IsKing()
         {
             return (figureValue == (int)FigureType.King);
+        }
+
+        public bool IsRook()
+        {
+            return (figureValue == (int)FigureType.Rook);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ChessService.Figures
 {
     public class Bishop : Figure
     {
-        public Bishop(int cI, int cJ, Image fig, int figValue) : base(cI, cJ, fig, figValue) { }
+        public Bishop(int cI, int cJ, Image fig, int figValue, bool isnotMove = true) : base(cI, cJ, fig, figValue, isnotMove) { }
         public override HashSet<Point> GetMoves()
         {
             moves = new HashSet<Point>();

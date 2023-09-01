@@ -1,4 +1,5 @@
 ﻿using ChessService.Figures;
+using ChessService.Timers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,6 @@ namespace ChessService.HelpForms
 {
     public partial class ChangePawnForm : Form
     {
-        //TODO форма появляется там, где пешка
         private Point figurePosition;
         private int side;
         public bool isBeat { set; private get; }
@@ -25,6 +25,7 @@ namespace ChessService.HelpForms
             side = owner;
             isBeat = beat;
             Init();
+            
         }
 
         public void Init()
@@ -58,6 +59,8 @@ namespace ChessService.HelpForms
             var moveText = SpritesFigures.FiguresSymbols[6] + (isBeat ? "x" : "") + Movement.ConvertCoords(figurePosition) +
                 "=" + SpritesFigures.FiguresSymbols[newFigValue % 10] + Movement.SituationSymbol[sit];
             Movement.WriteMove(moveText, side);
+            Field.EnableCells();
+            GameTimers.ChangeCourse();
             this.Close();
         }
 
@@ -65,10 +68,10 @@ namespace ChessService.HelpForms
         {
             switch (figValue % 10)
             {
-                case 2: return new Queen(x, y, figIM, figValue);
-                case 3: return new Bishop(x, y, figIM, figValue);
-                case 4: return new Horse(x, y, figIM, figValue);
-                case 5: return new Rook(x, y, figIM, figValue);
+                case 2: return new Queen(x, y, figIM, figValue, false);
+                case 3: return new Bishop(x, y, figIM, figValue, false);
+                case 4: return new Horse(x, y, figIM, figValue, false);
+                case 5: return new Rook(x, y, figIM, figValue, false);
                 default:
                     return null;
             }

@@ -135,6 +135,7 @@
             MovesTable.RowHeadersVisible=false;
             MovesTable.RowHeadersWidth=62;
             MovesTable.RowTemplate.Height=33;
+            MovesTable.ScrollBars=ScrollBars.Vertical;
             MovesTable.Size=new Size(354, 494);
             MovesTable.TabIndex=4;
             // 

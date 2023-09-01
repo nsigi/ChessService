@@ -9,7 +9,7 @@ namespace ChessService.Figures
 {
     public class King : Figure
     {
-        public King(int cI, int cJ, Image fig, int figValue) : base(cI, cJ, fig, figValue) { }
+        public King(int cI, int cJ, Image fig, int figValue, bool isnotMove = true) : base(cI, cJ, fig, figValue, isnotMove) { }
         public override HashSet<Point> GetMoves()
         {
             moves = new HashSet<Point>();
@@ -23,6 +23,8 @@ namespace ChessService.Figures
             CheckEndMoves(x - 1, y + 1); // ю-в
             CheckEndMoves(x - 1, y - 1); // ю-з
             CheckEndMoves(x + 1, y - 1); // с-з
+
+            CheckCastlingMoves();
 
             return moves;
         }
@@ -50,20 +52,50 @@ namespace ChessService.Figures
             return attackMoves;
         }
 
-        public override bool CheckAttackEndMoves(int cx, int cy)//TODO дописать точнее, чтобы короли не пересекались
+        //public override bool CheckAttackEndMoves(int cx, int cy)//TODO дописать точнее, чтобы короли не пересекались
+        //{
+        //    if (Field.InsideField(cx, cy))
+        //    {
+        //        if (Field.cells[cx, cy].figure != null && Field.cells[cx, cy].figure.owner != owner &&
+        //            Field.cells[cx, cy].figure.IsKing()) //встречен ли на пути вражеский король
+        //            return true;
+        //        attackMoves.Add(new Point(cx, cy));
+        //    }
+
+        //    return Field.InsideField(cx, cy) && Field.AvaliableMove(cx, cy, owner);
+        //}
+
+        public void CheckCastlingMoves()
         {
-            if (Field.InsideField(cx, cy))
+            if (isNotMove && !Field.SetsFigures[owner].isCheck)
             {
-                if (Field.cells[cx, cy].figure != null && Field.cells[cx, cy].figure.owner != owner &&
-                    Field.cells[cx, cy].figure.IsKing()) //встречен ли на пути вражеский король
-                    return true;
-                attackMoves.Add(new Point(cx, cy));
+                var horizontal = owner % 2 * 7;
+                int i;
+                if (Utils.CheckRookCastling(horizontal, 0))
+                {
+                    for (i = 1; i < 4; ++i)
+                    {
+                        var cell = new Point(horizontal, i);
+                        if (Field.IsNotEmptyCell(cell.X, cell.Y)
+                            || Field.SetsFigures[GamePlay.GetOpponent(owner)].attackMoves.Contains(cell))
+                            break;
+                    }
+                    if (i == 4)
+                        moves.Add(new Point(horizontal, 2));
+                }
+                if (Utils.CheckRookCastling(horizontal, 7))
+                {
+                    for (i = 5; i < 7; ++i)
+                    {
+                        var cell = new Point(horizontal, i);
+                        if (Field.IsNotEmptyCell(cell.X, cell.Y)
+                            || Field.SetsFigures[GamePlay.GetOpponent(owner)].attackMoves.Contains(cell))
+                            break;
+                    }
+                    if (i == 7)
+                        moves.Add(new Point(horizontal, 6));
+                }
             }
-
-            return Field.InsideField(cx, cy) && Field.AvaliableMove(cx, cy, owner);
         }
-
-        //TODO проверка полей на шах
-        // проверка на рокировку
     }
 }

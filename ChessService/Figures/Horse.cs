@@ -9,7 +9,7 @@ namespace ChessService.Figures
     public class Horse : Figure
     {
         private List<Point> dirs = new List<Point> { new Point(1, 2), new Point(2, 1)};
-        public Horse(int cI, int cJ, Image fig, int figValue) : base(cI, cJ, fig, figValue) { }
+        public Horse(int cI, int cJ, Image fig, int figValue, bool isnotMove = true) : base(cI, cJ, fig, figValue, isnotMove) { }
 
         public override HashSet<Point> GetMoves()
         {

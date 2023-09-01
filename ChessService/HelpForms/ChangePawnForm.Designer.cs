@@ -40,6 +40,7 @@
             ShowInTaskbar=false;
             StartPosition=FormStartPosition.CenterScreen;
             Text="Pick figure";
+            TopMost=true;
             ResumeLayout(false);
         }
 

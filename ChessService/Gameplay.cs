@@ -13,13 +13,14 @@ namespace ChessService
         // 0 - победила команда, которая вызвала метод той или иной, 1 - ничья, 2 - пат, 3 - время
         public static int CurrentPlayer; // 1 - белые, 2 - черные
         private static List<Label> LabelsInfo = new List<Label>();
-
+        public static bool IsNotEndGame { get; set; }
         
         public static void Init(Label infoWhite, Label infoBlack)
         {
             LabelsInfo.Add(null);
             LabelsInfo.Add(infoWhite);
             LabelsInfo.Add(infoBlack);
+            IsNotEndGame = true;
         }
 
         public static int GetOpponent() 
@@ -44,10 +45,10 @@ namespace ChessService
 
         public static void EndGame(int situation) 
         {
-            Field.LockAllCells();
             GameTimers.Stop();
             EndInfo(situation);
-            MessageBox.Show(GetReason(situation));
+            IsNotEndGame = false;
+            //MessageBox.Show(GetReason(situation));
         }
 
         private static string GetReason(int situation)

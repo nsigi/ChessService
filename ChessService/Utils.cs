@@ -12,6 +12,7 @@ namespace ChessService
     public static class Utils
     {
         public static bool isSymCheck = false;
+        public static Color BlackoutColor = Color.FromArgb((int)(255 * 0.6), Color.Black);
         public static void HelpSpritesFigures()
         {
             SpritesFigures.SpriteFigures();
@@ -25,6 +26,11 @@ namespace ChessService
         public static void CreatePosition(int[,] newField)
         {
             Field.field = newField;
+        }
+
+        public static bool CheckRookCastling(int x, int y)
+        {
+            return Field.IsNotEmptyCell(x, y) && Field.cells[x, y].figure.IsRook() && Field.cells[x, y].figure.isNotMove;
         }
     }
 }

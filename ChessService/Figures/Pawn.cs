@@ -10,7 +10,7 @@ namespace ChessService.Figures
 {
     public class Pawn : Figure
     {
-        public Pawn(int cI, int cJ, Image fig, int figValue) : base(cI, cJ, fig, figValue) { }
+        public Pawn(int cI, int cJ, Image fig, int figValue, bool isnotMove = true) : base(cI, cJ, fig, figValue, isnotMove) { }
 
         public override HashSet<Point> GetMoves()
         {
