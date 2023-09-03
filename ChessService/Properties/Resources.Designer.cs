@@ -59,5 +59,35 @@ namespace ChessService.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _1614263474_11_p_cherno_belie_kva {
+            get {
+                object obj = ResourceManager.GetObject("1614263474_11-p-cherno-belie-kva", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kvadrat_cvet_treugolnik_obem_reb {
+            get {
+                object obj = ResourceManager.GetObject("kvadrat-cvet-treugolnik-obem-reb", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap poster {
+            get {
+                object obj = ResourceManager.GetObject("poster", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

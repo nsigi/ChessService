@@ -32,5 +32,10 @@ namespace ChessService
         {
             return Field.IsNotEmptyCell(x, y) && Field.cells[x, y].figure.IsRook() && Field.cells[x, y].figure.isNotMove;
         }
+
+        public static int GetStartKingHorizontal(int owner)
+        {
+            return owner % 2 * 7;
+        }
     }
 }

@@ -154,20 +154,24 @@ namespace ChessService
                 if (isMoving)
                 {
                     var isBeat = (curCell.figure != null);
-                    bool isNotChangePawn = SwapCells(curCell, prevCell);
-                    var sitNumber = AnalysPosition(curCell.pos, GamePlay.CurrentPlayer);
+                    (bool isNotChangePawn, bool isNotSpecialWrite) situations = SwapCells(curCell, prevCell);
+                    int sitNumber = AnalysPosition(curCell.pos, GamePlay.CurrentPlayer);
 
-                    if (isNotChangePawn)
+                    if (situations.isNotSpecialWrite)
                         Movement.WriteMove(Movement.GenMoveText(curCell, isBeat, sitNumber), curCell.figure.owner);
 
                     isMoving = false;
                     HideMoves();
                     LockAllCells();
                     GamePlay.ChangeSide(); // смена хода
-                    if (isNotChangePawn && sitNumber < 2)
+                    if (situations.isNotChangePawn && sitNumber < 2)
                     {
                         EnableCells();
                         GameTimers.ChangeCourse();
+                    }
+                    else
+                    {
+                        GamePlay.IsNotChangePawn = situations.isNotChangePawn;
                     }
                     prevCell = null;
                     
@@ -213,9 +217,9 @@ namespace ChessService
             return i < 8 && j < 8 && i > -1 && j > -1;
         }
 
-        public static bool SwapCells(Cell cur, Cell prev)
+        public static (bool isNotChangePawn, bool isNotSpecialWrite) SwapCells(Cell cur, Cell prev)
         {
-            bool isNotChangePawn = true;
+            bool isNotChangePawn = true, isNotSpecialWrite = true;
             if (cur.figure != null)
             {
                 SetsFigures[GamePlay.GetOpponent()].RemoveFigure(cur.figure); //добавление в список съеденных
@@ -225,7 +229,7 @@ namespace ChessService
                 Field.SetsFigures[GamePlay.CurrentPlayer].RemoveFigure(prev.figure);
                 var pickForm = new ChangePawnForm(GamePlay.CurrentPlayer, cur.pos, cur.figure != null);
                 pickForm.Show();
-                isNotChangePawn = false;                
+                isNotChangePawn = isNotSpecialWrite = false;                
             }
             else
             {
@@ -233,11 +237,30 @@ namespace ChessService
                 prev.figure.Move(cur.pos);
                 cur.btn.BackgroundImage = prev.btn.BackgroundImage;
                 if (Field.cells[cur.pos.X, cur.pos.Y].figure.isNotMove)
+                {
                     Field.cells[cur.pos.X, cur.pos.Y].figure.isNotMove = false;
+                    // рокировка - ладью просто переставляем
+                    if (Field.cells[cur.pos.X, cur.pos.Y].figure.IsKing())
+                    {
+                        var horizontal = Utils.GetStartKingHorizontal(GamePlay.CurrentPlayer);
+                        if (cur.pos.Y == 2)
+                        {
+                            SwapCells(Field.cells[horizontal, 3], Field.cells[horizontal, 0]);
+                            Movement.WriteMove("O-O-O", GamePlay.CurrentPlayer);
+                            isNotSpecialWrite = false;
+                        }
+                        else if (cur.pos.Y == 6)
+                        {
+                            SwapCells(Field.cells[horizontal, 5], Field.cells[horizontal, 7]);
+                            Movement.WriteMove("O-O", GamePlay.CurrentPlayer);
+                            isNotSpecialWrite = false;
+                        }
+                    }
+                }
             }
             prev.btn.BackgroundImage = null;
             prev.figure = null;
-            return isNotChangePawn;
+            return (isNotChangePawn, isNotSpecialWrite);
             // удаление фигуры, если там она была (в список удаленных)
         }
 

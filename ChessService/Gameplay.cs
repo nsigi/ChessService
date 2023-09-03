@@ -14,13 +14,14 @@ namespace ChessService
         public static int CurrentPlayer; // 1 - белые, 2 - черные
         private static List<Label> LabelsInfo = new List<Label>();
         public static bool IsNotEndGame { get; set; }
+        public static bool IsNotChangePawn{ get; set; }
         
         public static void Init(Label infoWhite, Label infoBlack)
         {
             LabelsInfo.Add(null);
             LabelsInfo.Add(infoWhite);
             LabelsInfo.Add(infoBlack);
-            IsNotEndGame = true;
+            IsNotChangePawn = IsNotEndGame = true;
         }
 
         public static int GetOpponent() 

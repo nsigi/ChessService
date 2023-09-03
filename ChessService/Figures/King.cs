@@ -69,33 +69,34 @@ namespace ChessService.Figures
         {
             if (isNotMove && !Field.SetsFigures[owner].isCheck)
             {
-                var horizontal = owner % 2 * 7;
-                int i;
-                if (Utils.CheckRookCastling(horizontal, 0))
-                {
-                    for (i = 1; i < 4; ++i)
-                    {
-                        var cell = new Point(horizontal, i);
-                        if (Field.IsNotEmptyCell(cell.X, cell.Y)
-                            || Field.SetsFigures[GamePlay.GetOpponent(owner)].attackMoves.Contains(cell))
-                            break;
-                    }
-                    if (i == 4)
-                        moves.Add(new Point(horizontal, 2));
-                }
-                if (Utils.CheckRookCastling(horizontal, 7))
-                {
-                    for (i = 5; i < 7; ++i)
-                    {
-                        var cell = new Point(horizontal, i);
-                        if (Field.IsNotEmptyCell(cell.X, cell.Y)
-                            || Field.SetsFigures[GamePlay.GetOpponent(owner)].attackMoves.Contains(cell))
-                            break;
-                    }
-                    if (i == 7)
-                        moves.Add(new Point(horizontal, 6));
-                }
+                var horizontal = Utils.GetStartKingHorizontal(owner);
+                AddCastlingMoves(horizontal, 0, 1, 4, 4, 2);
+                AddCastlingMoves(horizontal, 7, 5, 7, 7, 6);
             }
+        }
+
+        private void AddCastlingMoves(int horizontal, int verticalRook, int l, int r, int right, int verticalMove)
+        {
+            if (Utils.CheckRookCastling(horizontal, verticalRook) && CheckFreeCellsCastling(l, r, horizontal, right))
+                moves.Add(new Point(horizontal, verticalMove));
+        }
+    
+        private bool CheckFreeCellsCastling(int l, int r, int horizontal, int right)
+        {
+            int i;
+            for (i = l; i < r; ++i)
+            {
+                var cell = new Point(horizontal, i);
+                Field.SetsFigures[GamePlay.GetOpponent(owner)].UpdateAttackMoves();
+                if (Field.IsNotEmptyCell(cell.X, cell.Y) ||
+                    Field.SetsFigures[GamePlay.GetOpponent(owner)].attackMoves.Contains(cell))
+                    break;
+            }
+
+            if (i == right)
+                i = i;
+
+            return i == right;
         }
     }
 }

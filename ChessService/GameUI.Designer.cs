@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             components=new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameUI));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameUI));
             FieldPanel=new Panel();
             RestartBtn=new Button();
             labelMoves=new Label();
@@ -71,6 +71,7 @@
             // 
             // FieldPanel
             // 
+            FieldPanel.BackgroundImage=Properties.Resources.poster;
             FieldPanel.BorderStyle=BorderStyle.FixedSingle;
             FieldPanel.Location=new Point(329, 75);
             FieldPanel.Name="FieldPanel";
@@ -80,7 +81,7 @@
             // RestartBtn
             // 
             RestartBtn.BackColor=SystemColors.MenuHighlight;
-            RestartBtn.BackgroundImage=(Image)resources.GetObject("RestartBtn.BackgroundImage");
+            RestartBtn.BackgroundImage=Properties.Resources._1614263474_11_p_cherno_belie_kva;
             RestartBtn.Cursor=Cursors.Hand;
             RestartBtn.Font=new Font("Cooper Black", 18F, FontStyle.Regular, GraphicsUnit.Point);
             RestartBtn.ForeColor=Color.White;
@@ -368,7 +369,7 @@
             // StartButton
             // 
             StartButton.BackColor=SystemColors.MenuHighlight;
-            StartButton.BackgroundImage=(Image)resources.GetObject("StartButton.BackgroundImage");
+            StartButton.BackgroundImage=Properties.Resources.kvadrat_cvet_treugolnik_obem_reb;
             StartButton.Cursor=Cursors.Hand;
             StartButton.Font=new Font("Cooper Black", 18F, FontStyle.Regular, GraphicsUnit.Point);
             StartButton.ForeColor=Color.White;

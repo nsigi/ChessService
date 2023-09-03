@@ -61,6 +61,7 @@ namespace ChessService.HelpForms
             Movement.WriteMove(moveText, side);
             Field.EnableCells();
             GameTimers.ChangeCourse();
+            GamePlay.IsNotChangePawn = true;
             this.Close();
         }
 
