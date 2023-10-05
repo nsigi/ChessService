@@ -23,7 +23,9 @@ namespace ChessService
             {
                 var figIm = new Bitmap(100, 100);
                 Graphics g = Graphics.FromImage(figIm);
-                g.DrawImage(new Bitmap("C:\\Users\\_Asus_\\Documents\\Laboratory\\ChessService\\ChessService\\Images\\chess.png"),
+                var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\ChessService\\Resources\\chess.png");
+                //g.DrawImage(new Bitmap("C:\\Users\\_Asus_\\Documents\\Laboratory\\ChessService\\ChessService\\Images\\chess.png"),
+                g.DrawImage(new Bitmap(path),
                     new Rectangle(0, 0, 100, 100), 150 * (i / 2), (i % 2 == 1) ? 0 : 150, 150, 150, GraphicsUnit.Pixel);
 
                 if (i % 2 == 1)

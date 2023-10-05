@@ -103,3 +103,4 @@ C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessServiceTests\obj\Debug\ne
 C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessServiceTests\obj\Debug\net7.0-windows\ChessServiceTests.pdb
 C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessServiceTests\obj\Debug\net7.0-windows\ChessServiceTests.genruntimeconfig.cache
 C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessServiceTests\obj\Debug\net7.0-windows\ref\ChessServiceTests.dll
+C:\Users\_Asus_\Documents\Laboratory\ChessService\ChessServiceTests\bin\Debug\net7.0-windows\ChessService.dll.config
