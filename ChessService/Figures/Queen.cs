@@ -8,44 +8,71 @@ namespace ChessService.Figures
 {
     public class Queen : Figure
     {
-        public Queen(int cI, int cJ, Image fig, int figValue) : base(cI, cJ, fig, figValue) { }
-        public override List<Point> GetMoves()
+        public Queen(int cI, int cJ, Image fig, int figValue, bool isnotMove = true) : base(cI, cJ, fig, figValue, isnotMove) { }
+        public override HashSet<Point> GetMoves()
         {
-            acceptMoves = new List<Point>();
+            moves = new HashSet<Point>();
 
-            for (int i = x + 1; i < 8; ++i) //вверх
+            for (int i = x + 1; i < 8; ++i) // вниз
                 if (CheckEndMoves(i, y)) break;
-            for (int i = x - 1; i > -1; --i) //вниз
+            for (int i = x - 1; i > -1; --i) // вверх
                 if (CheckEndMoves(i, y)) break;
-            for (int k = y + 1; k < 8; ++k) //вправо
+            for (int k = y + 1; k < 8; ++k) // вправо
                 if (CheckEndMoves(x, k)) break;
-            for (int k = y - 1; k > -1; --k) //влево
+            for (int k = y - 1; k > -1; --k) // влево
                 if (CheckEndMoves(x, k)) break;
 
             int j = y + 1;
-            for (int i = x - 1; i > -1; --i, ++j) // ю-в
+            for (int i = x - 1; i > -1; --i, ++j) // с-в
                 if (CheckEndMoves(i, j)) break;
 
             j = y - 1;
-            for (int i = x - 1; i > -1; --i, --j) // ю-з
+            for (int i = x - 1; i > -1; --i, --j) // с-з
                 if (CheckEndMoves(i, j)) break;
 
             j = y - 1;
-            for (int i = x + 1; i < 8; ++i, --j) // с-з
+            for (int i = x + 1; i < 8; ++i, --j) // ю-з
                 if (CheckEndMoves(i, j)) break;
 
             j = y + 1;
-            for (int i = x + 1; i < 8; ++i, ++j) //с-в
+            for (int i = x + 1; i < 8; ++i, ++j) // ю-в
                 if (CheckEndMoves(i, j)) break;
 
-            return acceptMoves;
+            return moves;
         }
 
-        public bool CheckEndMoves(int cx, int cy)
+        public override HashSet<Point> GetAttackMoves()
         {
-            if (Field.InsideField(cx, cy) && Field.AvaliableMove(cx, cy, owner))
-                acceptMoves.Add(new Point(cx, cy));
-            return Field.InsideField(cx, cy) && Field.CheckCell(cx, cy, owner);
+            attackMoves = new HashSet<Point>();
+
+            for (int i = x + 1; i < 8; ++i) //вверх
+                if (CheckAttackEndMoves(i, y)) break;
+            for (int i = x - 1; i > -1; --i) //вниз
+                if (CheckAttackEndMoves(i, y)) break;
+            for (int k = y + 1; k < 8; ++k) //вправо
+                if (CheckAttackEndMoves(x, k)) break;
+            for (int k = y - 1; k > -1; --k) //влево
+                if (CheckAttackEndMoves(x, k)) break;
+
+            int j = y + 1;
+            for (int i = x - 1; i > -1; --i, ++j) // ю-в
+                if (CheckAttackEndMoves(i, j)) break;
+
+            j = y - 1;
+            for (int i = x - 1; i > -1; --i, --j) // ю-з
+                if (CheckAttackEndMoves(i, j)) break;
+
+            j = y - 1;
+            for (int i = x + 1; i < 8; ++i, --j) // с-з
+                if (CheckAttackEndMoves(i, j)) break;
+
+            j = y + 1;
+            for (int i = x + 1; i < 8; ++i, ++j) //с-в
+                if (CheckAttackEndMoves(i, j)) break;
+
+            return attackMoves;
         }
+
+        
     }
 }

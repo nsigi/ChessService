@@ -8,35 +8,51 @@ namespace ChessService.Figures
 {
     public class Bishop : Figure
     {
-        public Bishop(int cI, int cJ, Image fig, int figValue) : base(cI, cJ, fig, figValue) { }
-        public override List<Point> GetMoves()
+        public Bishop(int cI, int cJ, Image fig, int figValue, bool isnotMove = true) : base(cI, cJ, fig, figValue, isnotMove) { }
+        public override HashSet<Point> GetMoves()
         {
-            acceptMoves = new List<Point>();
+            moves = new HashSet<Point>();
 
             int j = y + 1;
-            for (int i = x - 1; i > -1; --i, ++j) // ю-в
+            for (int i = x - 1; i > -1; --i, ++j) // с-в
                 if (CheckEndMoves(i, j)) break;
 
             j = y - 1;
-            for (int i = x - 1; i > -1; --i, --j) // ю-з
+            for (int i = x - 1; i > -1; --i, --j) // с-з
                 if (CheckEndMoves(i, j)) break;
 
             j = y - 1;
-            for (int i = x + 1; i < 8; ++i, --j) // с-з
+            for (int i = x + 1; i < 8; ++i, --j) // ю-з
                 if (CheckEndMoves(i, j)) break;
 
             j = y + 1;
-            for (int i = x + 1; i < 8; ++i, ++j) //с-в
+            for (int i = x + 1; i < 8; ++i, ++j) // ю-в
                 if (CheckEndMoves(i, j)) break;
 
-            return acceptMoves;
+            return moves;
         }
 
-        public bool CheckEndMoves(int cx, int cy)
+        public override HashSet<Point> GetAttackMoves()
         {
-            if (Field.InsideField(cx, cy) && Field.AvaliableMove(cx, cy, owner))
-                acceptMoves.Add(new Point(cx, cy));
-            return Field.InsideField(cx, cy) && Field.CheckCell(cx, cy, owner);
+            attackMoves = new HashSet<Point>();
+            int j = y + 1;
+            for (int i = x - 1; i > -1; --i, ++j) // ю-в
+                if (CheckAttackEndMoves(i, j)) break;
+
+            j = y - 1;
+            for (int i = x - 1; i > -1; --i, --j) // ю-з
+                if (CheckAttackEndMoves(i, j)) break;
+
+            j = y - 1;
+            for (int i = x + 1; i < 8; ++i, --j) // с-з
+                if (CheckAttackEndMoves(i, j)) break;
+
+            j = y + 1;
+            for (int i = x + 1; i < 8; ++i, ++j) //с-в
+                if (CheckAttackEndMoves(i, j)) break;
+
+            return attackMoves;
         }
+
     }
 }

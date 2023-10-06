@@ -9,6 +9,7 @@ namespace ChessService
 {
     public class Cell
     {
+        public enum AttackState { None, White, Black, Both }
         public Point pos;
         public Button btn { get; set; }
         public Figure figure { get; set; }

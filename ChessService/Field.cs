@@ -1,7 +1,11 @@
 ﻿using ChessService.Figures;
+using ChessService.HelpForms;
+using ChessService.Timers;
+using ChessService.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,13 +16,13 @@ namespace ChessService
         public static int[,] field { get; set; }
         public static Cell[,] cells { get; set; }
         private static Cell prevCell { get; set; }
-        public static int curPlayer; // 1 - белые, 2 - черные
         public static bool isMoving = false;
-        public static Form1 FieldUI { get; set; }
+        public static Panel FieldPanel { get; set; }
+        public static List<SetFigures> SetsFigures; // 1 - WhiteSetFigures, 2 - BlackSetFigures;
 
-        public static void Init(Form1 field)
+        public static void Init(Panel fieldPanel)
         {
-            FieldUI = field;
+            FieldPanel = fieldPanel;
             Field.field = new int[8, 8]
             {
             { 25,24,23,22,21,23,24,25 },
@@ -30,51 +34,62 @@ namespace ChessService
             { 16,16,16,16,16,16,16,16 },
             { 15,14,13,12,11,13,14,15 }};
 
-            curPlayer = 1;
+            GamePlay.CurrentPlayer = 1;
             CreateField();
         }
 
         public static void CreateField()
         {
+            SetsFigures = new List<SetFigures>();
+            SetsFigures.Add(null);
+            SetsFigures.Add(new SetFigures((int)Side.White, new Point(7, 4)));
+            SetsFigures.Add(new SetFigures((int)Side.Black, new Point(0, 4)));
             Field.cells = new Cell[8, 8];
             for (int i = 0; i < 8; ++i)
             {
                 for (int j = 0; j < 8; ++j)
                 {
                     int figValue = (Field.field[i, j] / 10 == 1) ? 1 : (Field.field[i, j] / 10 == 0) ? 0 : 2;
-                    Button btn = new Button();
-                    btn.Padding = new Padding(1, 0, 0, 0);
-                    btn.FlatStyle = FlatStyle.Flat;
-                    btn.FlatAppearance.BorderSize = 0;
-                    btn.BackColor = SetColorCell(i, j);
-                    btn.Size = new Size(100, 100);
-                    btn.Location = new Point(75 + j * 100, 25 + i * 100);
-                    //cell.Text = "⚫";
-                    btn.ForeColor = Color.FromArgb(100, 111, 64);
+                    var btn = CreateButton(i, j);
 
                     Figure fig = PlaceFigure(i, j, Field.field[i, j]);
                     if (fig != null)
                     {
                         btn.BackgroundImage = fig.figureIm;
+                        SetsFigures[Field.field[i, j] / 10].AddFigure(fig);
                     }
-                    else
-                    {
-                        btn.Enabled = false;
-                    }
+                    
                     btn.Click += new EventHandler(OnClick);
-                    FieldUI.Controls.Add(btn);
+                    btn.Enabled = false;
+                    //FieldUI.Controls.Add(btn);
+                    FieldPanel.Controls.Add(btn);
 
                     Field.cells[i, j] = new Cell(new Point(i, j), btn, fig);
                 }
             }
+            SetsFigures[(int)Side.White].UpdateAcceptMoves();
+            SetsFigures[(int)Side.Black].UpdateAcceptMoves();
         }
 
+        public static Button CreateButton(int i, int j)
+        {
+            Button btn = new Button();
+            btn.Padding = new Padding(1, 0, 0, 0);
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderSize = 0;
+            btn.BackColor = SetColorCell(i, j);
+            btn.Size = new Size(100, 100);
+            btn.Location = new Point(j * 100, i * 100);
+            //btn.Location = new Point(75 + j* 100, 25 + i* 100);
+            btn.ForeColor = Color.FromArgb(100, 111, 64);
+            return btn;
+        }
+        
         public static Figure PlaceFigure(int x, int y, int figValue)
         {
-            Image figure = new Bitmap(100, 100);
-            Graphics g = Graphics.FromImage(figure);
-            g.DrawImage(new Bitmap("C:\\Users\\_Asus_\\Documents\\Study\\ChessService\\Spites\\chess.png"), new Rectangle(0, 0, 100, 100), 150 * (figValue % 10 - 1),
-                (figValue / 10 != 1) ? 150 : 0, 150, 150, GraphicsUnit.Pixel);
+            SpritesFigures.SpriteFigures();
+            Image figure = (figValue / 10 == 1) ? SpritesFigures.WhiteFiguresImages[figValue % 10] : SpritesFigures.BlackFiguresImages[figValue % 10];
+
             switch (figValue % 10)
             {
                 case 1: return new King(x, y, figure, figValue);
@@ -104,45 +119,94 @@ namespace ChessService
                 }
             }
 
-            if (prevCell != null)
+            if (prevCell != null) //unset color select
                 prevCell.btn.BackColor = SetColorCell(prevCell.pos.X, prevCell.pos.Y);
 
-            if (curCell.figure != null && Field.field[i, j] / 10 == curPlayer)
+            if (curCell.figure != null && Field.cells[i, j].figure.owner == GamePlay.CurrentPlayer)
             {
                 HideMoves();
-                curBtn.BackColor = Color.FromArgb(100, 111, 64); // выделение текущей фигуры
-                LockCells();
-                List<Point> possMoves = curCell.figure.GetMoves();
-                ShowMoves(possMoves);
+                HashSet<Point> acceptMoves = curCell.figure.acceptMoves;
 
+                curBtn.BackColor = Color.FromArgb(100, 111, 64); // выделение текущей фигуры
+                          
+                LockCells();
+                ShowMoves(acceptMoves);
+                
                 if (isMoving)
                 {
                     HideMoves();
-                    curBtn.BackColor = SetColorCell(i, j);
+                    if (!SetsFigures[GamePlay.CurrentPlayer].isCheck)
+                        curBtn.BackColor = SetColorCell(i, j);
+                    else
+                        Field.cells[SetsFigures[GamePlay.CurrentPlayer].posKing.X, SetsFigures[GamePlay.CurrentPlayer].posKing.Y].btn.BackColor = Color.Red;
+                    //LockCells();
                     EnableCells();
-                    isMoving = false;
                 }
                 else
                 {
-                    isMoving = true;
-                    EnableCells(possMoves);
+                    EnableCells(acceptMoves);
                 }
+                isMoving = !isMoving;
                 prevCell = curCell;
             }
             else
             {
                 if (isMoving)
                 {
-                    Field.SwapCells(curCell, prevCell);
+                    var isBeat = (curCell.figure != null);
+                    (bool isNotChangePawn, bool isNotSpecialWrite) situations = SwapCells(curCell, prevCell);
+                    int sitNumber = AnalysPosition(curCell.pos, GamePlay.CurrentPlayer);
+
+                    if (situations.isNotSpecialWrite)
+                        Movement.WriteMove(Movement.GenMoveText(curCell, isBeat, sitNumber), curCell.figure.owner);
+
                     isMoving = false;
                     HideMoves();
-                    EnableCells();
-                    curPlayer = curPlayer % 2 + 1; // смена хода
+                    LockAllCells();
+                    GamePlay.ChangeSide(); // смена хода
+                    if (situations.isNotChangePawn && sitNumber < 2)
+                    {
+                        EnableCells();
+                        GameTimers.ChangeCourse();
+                    }
+                    else
+                    {
+                        GamePlay.IsNotChangePawn = situations.isNotChangePawn;
+                    }
                     prevCell = null;
+                    
                 }
             }
         }
 
+        public static int AnalysPosition(Point move, int side) // 0 - free, 1 - check, 2 - mat, 3 - pat
+        {
+            var sitNumber = 0;
+            SetsFigures[side].UpdateAttackMoves();
+
+            if (SetsFigures[side].isCheck && SetsFigures[side].acceptMoves.Contains(move)) //если сделан допустимый ход
+                SetsFigures[side].UnsetCheck();
+            if (SetsFigures[side].attackMoves.Contains(SetsFigures[GamePlay.GetOpponent(side)].posKing))
+            {
+                GamePlay.SetCheckOpponent(side);
+                ++sitNumber;
+            }
+
+            SetsFigures[GamePlay.GetOpponent(side)].UpdateAcceptMoves();
+            if (SetsFigures[GamePlay.GetOpponent(side)].acceptMoves.Count == 0)
+            {
+                ++sitNumber;
+                if (SetsFigures[GamePlay.GetOpponent(side)].isCheck)    
+                    GamePlay.EndGame((int)Situation.Checkmate);
+                else
+                {
+                    GamePlay.EndGame((int)Situation.Pat);
+                    ++sitNumber;
+                }
+                
+            }
+            return sitNumber;
+        }
         public static Color SetColorCell(int i, int j)
         {
             return ((i + j) % 2 != 0) ? Color.FromArgb(181, 136, 99) : Color.FromArgb(240, 217, 181);
@@ -153,32 +217,78 @@ namespace ChessService
             return i < 8 && j < 8 && i > -1 && j > -1;
         }
 
-        public static void SwapCells(Cell cur, Cell prev)
+        public static (bool isNotChangePawn, bool isNotSpecialWrite) SwapCells(Cell cur, Cell prev)
         {
-            (Field.field[cur.pos.X, cur.pos.Y], Field.field[prev.pos.X, prev.pos.Y]) = (Field.field[prev.pos.X, prev.pos.Y], 0);
-            cur.btn.Text = null;
-            cur.btn.BackgroundImage = prev.btn.BackgroundImage;
-            prev.btn.BackgroundImage = null;
-            if (cur.figure == null)
-                cur.figure = DefFigure(new Point(cur.pos.X, cur.pos.Y), prev);
+            bool isNotChangePawn = true, isNotSpecialWrite = true;
+            if (cur.figure != null)
+            {
+                SetsFigures[GamePlay.GetOpponent()].RemoveFigure(cur.figure); //добавление в список съеденных
+            }
+            if (prev.figure.figureValue == (int)FigureType.Pawn && (cur.pos.X == 0 || cur.pos.X == 7))// пешка дошла до края
+            {
+                Field.SetsFigures[GamePlay.CurrentPlayer].RemoveFigure(prev.figure);
+                var pickForm = new ChangePawnForm(GamePlay.CurrentPlayer, cur.pos, cur.figure != null);
+                pickForm.Show();
+                isNotChangePawn = isNotSpecialWrite = false;                
+            }
             else
             {
-                cur.figure = prev.figure;
-                (prev.figure.x, prev.figure.y) = (cur.pos.X, cur.pos.Y);
+                Field.cells[cur.pos.X, cur.pos.Y].figure = Field.cells[prev.pos.X, prev.pos.Y].figure;
+                prev.figure.Move(cur.pos);
+                cur.btn.BackgroundImage = prev.btn.BackgroundImage;
+                if (Field.cells[cur.pos.X, cur.pos.Y].figure.isNotMove)
+                {
+                    Field.cells[cur.pos.X, cur.pos.Y].figure.isNotMove = false;
+                    // рокировка - ладью просто переставляем
+                    if (Field.cells[cur.pos.X, cur.pos.Y].figure.IsKing())
+                    {
+                        var horizontal = Utils.GetStartKingHorizontal(GamePlay.CurrentPlayer);
+                        if (cur.pos.Y == 2)
+                        {
+                            SwapCells(Field.cells[horizontal, 3], Field.cells[horizontal, 0]);
+                            Movement.WriteMove("O-O-O", GamePlay.CurrentPlayer);
+                            isNotSpecialWrite = false;
+                        }
+                        else if (cur.pos.Y == 6)
+                        {
+                            SwapCells(Field.cells[horizontal, 5], Field.cells[horizontal, 7]);
+                            Movement.WriteMove("O-O", GamePlay.CurrentPlayer);
+                            isNotSpecialWrite = false;
+                        }
+                    }
+                }
             }
+            prev.btn.BackgroundImage = null;
+            prev.figure = null;
+            return (isNotChangePawn, isNotSpecialWrite);
             // удаление фигуры, если там она была (в список удаленных)
+        }
+
+        public static void SymSwapCells(Cell cur, Cell prev)
+        {
+            if (cur.figure != null)
+            {
+                SetsFigures[cur.figure.owner].RemoveFigure(cur.figure);
+            }
+            Field.cells[cur.pos.X, cur.pos.Y].figure = Field.cells[prev.pos.X, prev.pos.Y].figure;
+            prev.figure.Move(cur.pos);
+            prev.figure = null;
+            //SwapCells(cur, prev);
+            //cur.figure = prev.figure;
+            //prev.figure = bufFig;
         }
 
         public static Figure DefFigure(Point newPos, Cell c)
         {
+            int figValue = c.figure.owner * 10 + c.figure.figureValue;
             switch (c.figure.figureValue)
             {
-                case 1: return new King(newPos.X, newPos.Y, c.figure.figureIm, Field.field[newPos.X, newPos.Y]);
-                case 2: return new Queen(newPos.X, newPos.Y, c.figure.figureIm, Field.field[newPos.X, newPos.Y]);
-                case 3: return new Bishop(newPos.X, newPos.Y, c.figure.figureIm, Field.field[newPos.X, newPos.Y]);
-                case 4: return new Horse(newPos.X, newPos.Y, c.figure.figureIm, Field.field[newPos.X, newPos.Y]);
-                case 5: return new Rook(newPos.X, newPos.Y, c.figure.figureIm, Field.field[newPos.X, newPos.Y]);
-                case 6: return new Pawn(newPos.X, newPos.Y, c.figure.figureIm, Field.field[newPos.X, newPos.Y]);
+                case 1: return new King(newPos.X, newPos.Y, c.figure.figureIm, figValue);
+                case 2: return new Queen(newPos.X, newPos.Y, c.figure.figureIm, figValue);
+                case 3: return new Bishop(newPos.X, newPos.Y, c.figure.figureIm, figValue);
+                case 4: return new Horse(newPos.X, newPos.Y, c.figure.figureIm, figValue);
+                case 5: return new Rook(newPos.X, newPos.Y, c.figure.figureIm, figValue);
+                case 6: return new Pawn(newPos.X, newPos.Y, c.figure.figureIm, figValue);
                 default:
                     return null;
             }
@@ -186,17 +296,15 @@ namespace ChessService
 
         public static bool AvaliableMove(int x, int y, int owner)
         {
-            return Field.field[x, y] == 0 || Field.field[x, y] / 10 != owner;
-
+            return Field.cells[x, y].figure == null || Field.cells[x, y].figure.owner != owner && !Field.cells[x, y].figure.IsKing();
         }
 
-        public static bool CheckCell(int x, int y, int owner)
+        public static bool IsNotEmptyCell(int x, int y)
         {
-            return Field.field[x, y] != 0;
-
+            return Field.cells[x, y].figure != null;
         }
 
-        public static void ShowMoves(List<Point> moves)
+        public static void ShowMoves(HashSet<Point> moves)
         {
             if (moves == null) return;
             foreach (Point p in moves)
@@ -222,12 +330,13 @@ namespace ChessService
             {
                 for (int j = 0; j < 8; ++j)
                 {
-                    Field.cells[i, j].btn.Enabled = true;
+                    if (Field.cells[i, j].figure != null && Field.cells[i, j].figure.owner == GamePlay.CurrentPlayer)
+                        Field.cells[i, j].btn.Enabled = true;
                 }
             }
         }
 
-        public static void EnableCells(List<Point> moves)
+        public static void EnableCells(HashSet<Point> moves)
         {
             if (moves == null) return;
             foreach (Point p in moves)
@@ -242,10 +351,17 @@ namespace ChessService
             {
                 for (int j = 0; j < 8; ++j)
                 {
-                    if (Field.cells[i, j].figure == null || Field.cells[i, j].figure.owner != curPlayer)
+                    if (Field.cells[i, j].figure == null || Field.cells[i, j].figure.owner != GamePlay.CurrentPlayer)
                         Field.cells[i, j].btn.Enabled = false;
                 }
             }
+        }
+
+        public static void LockAllCells()
+        {
+            for (int i = 0; i < 8; ++i)
+                for (int j = 0; j < 8; ++j)
+                    Field.cells[i, j].btn.Enabled = false;
         }
     }
 }
